@@ -24,9 +24,9 @@ public class TicketBookingController extends JFrame {
 
         // 起訖站
         JLabel startStationLabel = new JLabel("出發站:");
-        startStationComboBox = new JComboBox<>(new String[]{"台北", "台中", "高雄"});
+        startStationComboBox = new JComboBox<>(new String[]{"南港", "台北", "板橋", "桃園", "新竹", "苗栗", "台中", "彰化", "雲林", "嘉義", "台南", "左營"});
         JLabel endStationLabel = new JLabel("到達站:");
-        endStationComboBox = new JComboBox<>(new String[]{"台北", "台中", "高雄"});
+        endStationComboBox = new JComboBox<>(new String[]{"南港", "台北", "板橋", "桃園", "新竹", "苗栗", "台中", "彰化", "雲林", "嘉義", "台南", "左營"});
 
         // 票種
         JLabel ticketTypeLabel = new JLabel("票種:");
@@ -55,12 +55,29 @@ public class TicketBookingController extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String startStation = (String) startStationComboBox.getSelectedItem();
                 String endStation = (String) endStationComboBox.getSelectedItem();
-                String ticketType = singleTicketRadioButton.isSelected() ? "單程票" : "來回票";
+                String ticketType = singleTicketRadioButton.isSelected() ? "單程票" : 
+                                    returnTicketRadioButton.isSelected() ? "來回票" : "";
                 String ticketCount = oneTicketRadioButton.isSelected() ? "1張" : 
                                     twoTicketsRadioButton.isSelected() ? "2張" : 
-                                    threeTicketsRadioButton.isSelected() ? "3張" : "4張";
+                                    threeTicketsRadioButton.isSelected() ? "3張" : 
+                                    fourticketsRadioButton.isSelected() ? "4張" : "";
+
+                if(ticketType.equals("") || ticketCount.equals("")) {
+                    JOptionPane.showMessageDialog(null, "請選擇票種及張數!");
+                    return;
+                }
 
                 JOptionPane.showMessageDialog(null, "您要訂的是從 " + startStation + " 到 " + endStation + " 的 " + ticketType + "，共 " + ticketCount + "。");
+                
+                int option = JOptionPane.showConfirmDialog(null, "確定要訂票嗎?", "訂票確認", JOptionPane.YES_NO_OPTION);
+                if (option == JOptionPane.YES_OPTION) {
+                    JOptionPane.showMessageDialog(null, "訂票成功!");
+                }
+
+                int option2 = JOptionPane.showConfirmDialog(null, "是否要繼續訂票?", "繼續訂票", JOptionPane.YES_NO_OPTION);
+                if (option2 == JOptionPane.NO_OPTION) {
+                    System.exit(0);
+                }
             }
         });
 
