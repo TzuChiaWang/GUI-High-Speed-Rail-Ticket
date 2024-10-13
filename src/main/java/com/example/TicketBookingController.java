@@ -15,12 +15,20 @@ public class TicketBookingController extends JFrame {
     private JRadioButton threeTicketsRadioButton;
     private JRadioButton fourticketsRadioButton;
     private JButton bookButton;
+    private JList<String> ticketList;
+    private DefaultListModel<String> ticketListModel;
 
     public TicketBookingController() {
         setTitle("高鐵訂票系統");
         setSize(500, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new GridLayout(9, 6));
+        
+
+        ticketListModel = new DefaultListModel<>();
+        ticketList = new JList<>(ticketListModel);
+        JScrollPane scrollPane = new JScrollPane(ticketList);
+    
 
         // 起訖站
         JLabel startStationLabel = new JLabel("出發站:");
@@ -48,38 +56,59 @@ public class TicketBookingController extends JFrame {
         ticketCountGroup.add(threeTicketsRadioButton);
         ticketCountGroup.add(fourticketsRadioButton);
 
+        
+
         // 訂票按鈕
         bookButton = new JButton("訂票");
         bookButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String startStation = (String) startStationComboBox.getSelectedItem();
-                String endStation = (String) endStationComboBox.getSelectedItem();
-                String ticketType = singleTicketRadioButton.isSelected() ? "單程票" : 
-                                    returnTicketRadioButton.isSelected() ? "來回票" : "";
-                String ticketCount = oneTicketRadioButton.isSelected() ? "1張" : 
-                                    twoTicketsRadioButton.isSelected() ? "2張" : 
-                                    threeTicketsRadioButton.isSelected() ? "3張" : 
-                                    fourticketsRadioButton.isSelected() ? "4張" : "";
+            String startStation = (String) startStationComboBox.getSelectedItem();
+            String endStation = (String) endStationComboBox.getSelectedItem();
+            String ticketType = singleTicketRadioButton.isSelected() ? "單程票" : 
+                        returnTicketRadioButton.isSelected() ? "來回票" : "";
+            String ticketCount = oneTicketRadioButton.isSelected() ? "1張" : 
+                        twoTicketsRadioButton.isSelected() ? "2張" : 
+                        threeTicketsRadioButton.isSelected() ? "3張" : 
+                        fourticketsRadioButton.isSelected() ? "4張" : "";
 
-                if(ticketType.equals("") || ticketCount.equals("")) {
-                    JOptionPane.showMessageDialog(null, "請選擇票種及張數!");
-                    return;
-                }
+            if(ticketType.equals("") || ticketCount.equals("")) {
+                JOptionPane.showMessageDialog(null, "請選擇票種及張數!");
+                return;
+            }
 
-                JOptionPane.showMessageDialog(null, "您要訂的是從 " + startStation + " 到 " + endStation + " 的 " + ticketType + "，共 " + ticketCount + "。");
-                
-                int option = JOptionPane.showConfirmDialog(null, "確定要訂票嗎?", "訂票確認", JOptionPane.YES_NO_OPTION);
-                if (option == JOptionPane.YES_OPTION) {
-                    JOptionPane.showMessageDialog(null, "訂票成功!");
-                }
+            JOptionPane.showMessageDialog(null, "您要訂的是從 " + startStation + " 到 " + endStation + " 的 " + ticketType + "，共 " + ticketCount + "。");
+            
+            int option = JOptionPane.showConfirmDialog(null, "確定要訂票嗎?", "訂票確認", JOptionPane.YES_NO_OPTION);
+            if (option == JOptionPane.YES_OPTION) {
+                JOptionPane.showMessageDialog(null, "訂票成功!");
+                ticketListModel.addElement("從 " + startStation + " 到 " + endStation + " 的 " + ticketType + "，共 " + ticketCount);
+            }
 
-                int option2 = JOptionPane.showConfirmDialog(null, "是否要繼續訂票?", "繼續訂票", JOptionPane.YES_NO_OPTION);
-                if (option2 == JOptionPane.NO_OPTION) {
+            int option2 = JOptionPane.showConfirmDialog(null, "是否要繼續訂票?", "繼續訂票", JOptionPane.YES_NO_OPTION);
+            if (option2 == JOptionPane.NO_OPTION) {
+
+                scrollPane.setVisible(true);
+                JFrame listFrame = new JFrame("訂票清單");
+                listFrame.setSize(300, 200);
+                listFrame.setLayout(new BorderLayout());
+                listFrame.add(scrollPane, BorderLayout.CENTER);
+
+                JButton exitButton = new JButton("離開");
+                exitButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
                     System.exit(0);
                 }
+                });
+                listFrame.add(exitButton, BorderLayout.SOUTH);
+                listFrame.setVisible(true);
             }
-        });
+            }
+        }
+    );
+
+        
 
         // 加入元件到介面
         add(startStationLabel);
